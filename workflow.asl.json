@@ -1,0 +1,18 @@
+{
+  "StartAt": "ResizeImage",
+  "States": {
+    "ResizeImage": {
+      "Type": "Task",
+      "Resource": "${ResizeArn}",
+      "Next": "CheckResult",
+      "Catch": [{"ErrorEquals": ["States.ALL"], "Next": "ResizeFailed"}]
+    },
+    "CheckResult": {
+      "Type": "Choice",
+      "Choices": [{"Variable": "$.ok", "BooleanEquals": true, "Next": "ThumbnailSaved"}],
+      "Default": "ResizeFailed"
+    },
+    "ThumbnailSaved": {"Type": "Succeed"},
+    "ResizeFailed": {"Type": "Fail", "Error": "ThumbnailFailed"}
+  }
+}
